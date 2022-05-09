@@ -4,6 +4,7 @@ using Boards.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boards.Migrations
 {
     [DbContext(typeof(MyBoardContext))]
-    partial class MyBoardContextModelSnapshot : ModelSnapshot
+    [Migration("20220507164017_UserFullName")]
+    partial class UserFullName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,8 +61,8 @@ namespace Boards.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<Guid>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Author")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .ValueGeneratedOnAdd()
@@ -78,8 +80,6 @@ namespace Boards.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
 
                     b.HasIndex("WorkItemId");
 
@@ -176,23 +176,6 @@ namespace Boards.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WorkItemStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Value = "To Do"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Value = "Doing"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Value = "Done"
-                        });
                 });
 
             modelBuilder.Entity("Boards.Entities.WorkItemTag", b =>
@@ -267,19 +250,11 @@ namespace Boards.Migrations
 
             modelBuilder.Entity("Boards.Entities.Comment", b =>
                 {
-                    b.HasOne("Boards.Entities.User", "Author")
-                        .WithMany("Comment")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Boards.Entities.WorkItem", "WorkItem")
                         .WithMany("Comments")
                         .HasForeignKey("WorkItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("WorkItem");
                 });
@@ -325,8 +300,6 @@ namespace Boards.Migrations
             modelBuilder.Entity("Boards.Entities.User", b =>
                 {
                     b.Navigation("Address");
-
-                    b.Navigation("Comment");
 
                     b.Navigation("WorkItems");
                 });
