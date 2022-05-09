@@ -70,10 +70,10 @@ namespace Boards.Entities
                         .WithMany()
                         .HasForeignKey(wit => wit.WorkItemId),
 
-                    wit =>
+                    w =>
                     {
-                        wit.HasKey(x => new { x.TagId, x.WorkItemId });
-                        wit.Property(x => x.PublicationDate).HasDefaultValueSql("getutcdate()");
+                        w.HasKey(x => new { x.TagId, x.WorkItemId });
+                        w.Property(x => x.PublicationDate).HasDefaultValueSql("getutcdate()");
                     });
             });
 
@@ -101,6 +101,13 @@ namespace Boards.Entities
                 .HasData(new WorkItemState() { Id = 1, Value = "To Do" },
                     new WorkItemState() { Id = 2, Value = "Doing" },
                     new WorkItemState() { Id = 3, Value = "Done" });
+
+            modelBuilder.Entity<Tag>()
+                .HasData(new Tag() { Id = 1, Value = "Web" },
+                    new Tag() { Id = 2, Value = "UI" },
+                    new Tag() { Id = 3, Value = "Desktop" },
+                    new Tag() { Id = 4, Value = "API" },
+                    new Tag() { Id = 5, Value = "Service" });
         }
     }
 }
