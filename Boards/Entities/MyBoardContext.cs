@@ -25,9 +25,9 @@ namespace Boards.Entities
                  .IsRequired()
                  .HasMaxLength(50);
 
-           modelBuilder.Entity<Epic>()
-                .Property(wi => wi.EndDate)
-                .HasPrecision(3);
+            modelBuilder.Entity<Epic>()
+                 .Property(wi => wi.EndDate)
+                 .HasPrecision(3);
 
             modelBuilder.Entity<Task>()
                 .Property(wi => wi.Activity)
@@ -44,31 +44,31 @@ namespace Boards.Entities
             modelBuilder.Entity<WorkItem>(eb =>
             {
                 eb.HasOne(w => w.State)
-                .WithMany()
-                .HasForeignKey(w => w.StateId);
+                    .WithMany()
+                    .HasForeignKey(w => w.StateId);
 
                 eb.Property(x => x.Area).HasColumnType("varchar(200)");
                 eb.Property(wi => wi.IterationPath).HasColumnName("Iteration_Path");
-    
+
                 eb.Property(wi => wi.Priority).HasDefaultValue(1);
                 eb.HasMany(w => w.Comments)
-                .WithOne(c => c.WorkItem)
-                .HasForeignKey(c => c.WorkItemId);
+                    .WithOne(c => c.WorkItem)
+                    .HasForeignKey(c => c.WorkItemId);
 
                 eb.HasOne(w => w.Author)
-                .WithMany(u => u.WorkItems)
-                .HasForeignKey(w => w.AuthorId);
+                    .WithMany(u => u.WorkItems)
+                    .HasForeignKey(w => w.AuthorId);
 
                 eb.HasMany(w => w.Tags)
-                .WithMany(t => t.WorkItems)
-                .UsingEntity<WorkItemTag>(
-                    w => w.HasOne(wit => wit.Tag)
-                    .WithMany()
-                    .HasForeignKey(wit => wit.TagId),
+                    .WithMany(t => t.WorkItems)
+                    .UsingEntity<WorkItemTag>(
+                        w => w.HasOne(wit => wit.Tag)
+                        .WithMany()
+                        .HasForeignKey(wit => wit.TagId),
 
                     w => w.HasOne(wit => wit.WorkItem)
-                    .WithMany()
-                    .HasForeignKey(wit => wit.WorkItemId),
+                        .WithMany()
+                        .HasForeignKey(wit => wit.WorkItemId),
 
                     wit =>
                     {
@@ -79,14 +79,29 @@ namespace Boards.Entities
 
             modelBuilder.Entity<Comment>(eb =>
             {
-                eb.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
-                eb.Property(x => x.UpdatedDate).ValueGeneratedOnUpdate();
+                eb.Property(x => x.CreatedDate)
+                    .HasDefaultValueSql("getutcdate()");
+                eb.Property(x => x.UpdatedDate)
+                    .ValueGeneratedOnUpdate();
             });
 
-            modelBuilder.Entity<User>()
-                .HasOne(u => u.Address)
-                .WithOne(a => a.User)
-                .HasForeignKey<Address>(a => a.UserId);
+            modelBuilder.Entity<User>(eb =>
+            {
+                eb.HasOne(u => u.Address)
+                    .WithOne(a => a.User)
+                    .HasForeignKey<Address>(a => a.UserId);
+
+                eb.HasMany(u => u.Comment)
+                    .WithOne(c => c.Author)
+                    .HasForeignKey(c => c.AuthorId)
+                    .OnDelete(DeleteBehavior.NoAction);
+            });
+
+            modelBuilder.Entity<WorkItemState>()
+                .HasData(new WorkItemState() { Id = 1, Value = "To Do" },
+                    new WorkItemState() { Id = 2, Value = "Doing" },
+                    new WorkItemState() { Id = 3, Value = "Done" });
+
         }
     }
 }

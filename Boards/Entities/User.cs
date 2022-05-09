@@ -14,6 +14,7 @@ namespace Boards.Entities
 
         public Address Address { get; set; }
 
-        public List<WorkItem> WorkItems { get; set; }
+        public List<WorkItem> WorkItems { get; set; } = new List<WorkItem>();
+        public List<Comment> Comment { get; set; } = new List<Comment>();
     }
 } 

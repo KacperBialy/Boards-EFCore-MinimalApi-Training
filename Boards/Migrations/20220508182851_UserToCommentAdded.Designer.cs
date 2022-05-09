@@ -4,6 +4,7 @@ using Boards.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boards.Migrations
 {
     [DbContext(typeof(MyBoardContext))]
-    partial class MyBoardContextModelSnapshot : ModelSnapshot
+    [Migration("20220508182851_UserToCommentAdded")]
+    partial class UserToCommentAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,23 +178,6 @@ namespace Boards.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WorkItemStates");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Value = "To Do"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Value = "Doing"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Value = "Done"
-                        });
                 });
 
             modelBuilder.Entity("Boards.Entities.WorkItemTag", b =>
