@@ -17,6 +17,7 @@ namespace Boards.Entities
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<WorkItemState> WorkItemStates { get; set; }
+        public DbSet<WorkItemTag> WorkItemTag { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,10 +92,10 @@ namespace Boards.Entities
                     .WithOne(a => a.User)
                     .HasForeignKey<Address>(a => a.UserId);
 
-                eb.HasMany(u => u.Comment)
+                eb.HasMany(u => u.Comments)
                     .WithOne(c => c.Author)
                     .HasForeignKey(c => c.AuthorId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.ClientCascade);
             });
 
             modelBuilder.Entity<WorkItemState>()

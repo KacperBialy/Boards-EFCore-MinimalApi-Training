@@ -1,5 +1,7 @@
 ﻿using Boards.Entities;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -7,6 +9,10 @@ var configuration = builder.Configuration;
 
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+services.Configure<JsonOptions>(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
 
 services.AddDbContext<MyBoardContext>(option =>
 {
@@ -58,5 +64,65 @@ if (!users.Any())
     dbContext.Users.AddRange(user1, user2);
     dbContext.SaveChanges();
 }
+
+app.MapGet("data", async (MyBoardContext db) =>
+{
+    var states = await db.WorkItemStates
+        .AsNoTracking()
+        .ToListAsync();
+
+    var entries = db.ChangeTracker.Entries();
+
+    return states;
+});
+
+app.MapPost("update", async (MyBoardContext db) =>
+{
+    var epic = await db.Epics.FirstAsync(epic => epic.Id == 1);
+
+    var rejectedState = await db.WorkItemStates.FirstAsync(a => a.Value == "Rejected");
+
+    epic.State = rejectedState;
+
+    await db.SaveChangesAsync();
+
+    return epic;
+});
+
+app.MapPost("create", async (MyBoardContext db) =>
+{
+    var address = new Address()
+    {
+        Id = Guid.NewGuid(),
+        City = "Kraków",
+        Country = "Poland",
+        Street = "Długa"
+    };
+
+    var user = new User()
+    {
+        Email = "user@test.com",
+        FullName = "Test User",
+        Address = address,
+    };
+
+    await db.Users.AddAsync(user);
+    await db.SaveChangesAsync();
+});
+
+app.MapDelete("delete", async (MyBoardContext db) =>
+{
+    var workItem = new Epic()
+    {
+        Id = 2
+    };
+
+    var entry = db.Attach(workItem);
+    entry.State = EntityState.Deleted;
+
+    db.WorkItems.Remove(workItem);
+
+    await db.SaveChangesAsync();
+});
 
 app.Run();
