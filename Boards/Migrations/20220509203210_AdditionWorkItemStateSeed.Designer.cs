@@ -4,6 +4,7 @@ using Boards.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Boards.Migrations
 {
     [DbContext(typeof(MyBoardContext))]
-    partial class MyBoardContextModelSnapshot : ModelSnapshot
+    [Migration("20220509203210_AdditionWorkItemStateSeed")]
+    partial class AdditionWorkItemStateSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,33 +102,6 @@ namespace Boards.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Value = "Web"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Value = "UI"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Value = "Desktop"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Value = "API"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Value = "Service"
-                        });
                 });
 
             modelBuilder.Entity("Boards.Entities.User", b =>
@@ -144,17 +119,6 @@ namespace Boards.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Boards.Entities.ViewModels.TopAuthor", b =>
-                {
-                    b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("WorkItemsCreated")
-                        .HasColumnType("int");
-
-                    b.ToView("View_TopAuthors");
                 });
 
             modelBuilder.Entity("Boards.Entities.WorkItem", b =>
@@ -306,9 +270,9 @@ namespace Boards.Migrations
             modelBuilder.Entity("Boards.Entities.Comment", b =>
                 {
                     b.HasOne("Boards.Entities.User", "Author")
-                        .WithMany("Comments")
+                        .WithMany("Comment")
                         .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Boards.Entities.WorkItem", "WorkItem")
@@ -364,7 +328,7 @@ namespace Boards.Migrations
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("Comments");
+                    b.Navigation("Comment");
 
                     b.Navigation("WorkItems");
                 });

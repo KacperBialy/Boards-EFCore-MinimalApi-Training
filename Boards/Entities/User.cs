@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Boards.Entities
+﻿namespace Boards.Entities
 {
     public class User
     {
@@ -15,6 +9,6 @@ namespace Boards.Entities
         public Address Address { get; set; }
 
         public List<WorkItem> WorkItems { get; set; } = new List<WorkItem>();
-        public List<Comment> Comment { get; set; } = new List<Comment>();
+        public List<Comment> Comments { get; set; } = new List<Comment>();
     }
-} 
+}

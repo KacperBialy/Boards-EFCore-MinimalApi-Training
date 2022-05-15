@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Boards.Entities.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boards.Entities
 {
@@ -17,6 +18,8 @@ namespace Boards.Entities
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<WorkItemState> WorkItemStates { get; set; }
+        public DbSet<WorkItemTag> WorkItemTag { get; set; }
+        public DbSet<TopAuthor> ViewTopAuthors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -70,10 +73,10 @@ namespace Boards.Entities
                         .WithMany()
                         .HasForeignKey(wit => wit.WorkItemId),
 
-                    wit =>
+                    w =>
                     {
-                        wit.HasKey(x => new { x.TagId, x.WorkItemId });
-                        wit.Property(x => x.PublicationDate).HasDefaultValueSql("getutcdate()");
+                        w.HasKey(x => new { x.TagId, x.WorkItemId });
+                        w.Property(x => x.PublicationDate).HasDefaultValueSql("getutcdate()");
                     });
             });
 
@@ -91,10 +94,10 @@ namespace Boards.Entities
                     .WithOne(a => a.User)
                     .HasForeignKey<Address>(a => a.UserId);
 
-                eb.HasMany(u => u.Comment)
+                eb.HasMany(u => u.Comments)
                     .WithOne(c => c.Author)
                     .HasForeignKey(c => c.AuthorId)
-                    .OnDelete(DeleteBehavior.NoAction);
+                    .OnDelete(DeleteBehavior.ClientCascade);
             });
 
             modelBuilder.Entity<WorkItemState>()
@@ -102,6 +105,18 @@ namespace Boards.Entities
                     new WorkItemState() { Id = 2, Value = "Doing" },
                     new WorkItemState() { Id = 3, Value = "Done" });
 
+            modelBuilder.Entity<Tag>()
+                .HasData(new Tag() { Id = 1, Value = "Web" },
+                    new Tag() { Id = 2, Value = "UI" },
+                    new Tag() { Id = 3, Value = "Desktop" },
+                    new Tag() { Id = 4, Value = "API" },
+                    new Tag() { Id = 5, Value = "Service" });
+
+            modelBuilder.Entity<TopAuthor>(eb =>
+            {
+                eb.ToView("View_TopAuthors");
+                eb.HasNoKey();
+            });
         }
     }
 }
