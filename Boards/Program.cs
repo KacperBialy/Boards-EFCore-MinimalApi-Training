@@ -67,13 +67,8 @@ if (!users.Any())
 
 app.MapGet("data", async (MyBoardContext db) =>
 {
-    var states = await db.WorkItemStates
-        .AsNoTracking()
-        .ToListAsync();
-
-    var entries = db.ChangeTracker.Entries();
-
-    return states;
+    var topAuthors = await db.ViewTopAuthors.ToListAsync();
+    return topAuthors;
 });
 
 app.MapPost("update", async (MyBoardContext db) =>

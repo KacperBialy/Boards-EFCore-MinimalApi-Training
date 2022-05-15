@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Boards.Entities.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace Boards.Entities
 {
@@ -18,6 +19,7 @@ namespace Boards.Entities
         public DbSet<Address> Addresses { get; set; }
         public DbSet<WorkItemState> WorkItemStates { get; set; }
         public DbSet<WorkItemTag> WorkItemTag { get; set; }
+        public DbSet<TopAuthor> ViewTopAuthors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -109,6 +111,12 @@ namespace Boards.Entities
                     new Tag() { Id = 3, Value = "Desktop" },
                     new Tag() { Id = 4, Value = "API" },
                     new Tag() { Id = 5, Value = "Service" });
+
+            modelBuilder.Entity<TopAuthor>(eb =>
+            {
+                eb.ToView("View_TopAuthors");
+                eb.HasNoKey();
+            });
         }
     }
 }
