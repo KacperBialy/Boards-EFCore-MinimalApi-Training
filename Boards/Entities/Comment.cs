@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Boards.Entities
+﻿namespace Boards.Entities
 {
     public class Comment
     {
@@ -13,10 +7,10 @@ namespace Boards.Entities
         public DateTime CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
-        public WorkItem WorkItem { get; set; }
+        public virtual WorkItem WorkItem { get; set; }
         public int WorkItemId { get; set; }
 
-        public User Author { get; set; }
+        public virtual User Author { get; set; }
         public Guid AuthorId { get; set; }
     }
 }

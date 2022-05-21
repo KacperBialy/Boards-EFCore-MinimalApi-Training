@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Boards.Entities
+﻿namespace Boards.Entities
 {
     public class Address
     {
@@ -14,7 +8,14 @@ namespace Boards.Entities
         public string Street { get; set; }
         public string PostalCode { get; set; }
 
-        public User User { get; set; }
+        public virtual User User { get; set; }
         public Guid UserId { get; set; }
+        public Coordinate Coordinate { get; set; }
+    }
+
+    public class Coordinate
+    {
+        public decimal? Longitude { get; set; }
+        public decimal? Lattitude { get; set; }
     }
 }
